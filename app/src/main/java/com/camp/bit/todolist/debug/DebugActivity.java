@@ -7,6 +7,7 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.AndroidException;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -15,7 +16,12 @@ import android.widget.Toast;
 import com.camp.bit.todolist.R;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -66,6 +72,40 @@ public class DebugActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // TODO 把一段文本写入某个存储区的文件中，再读出来，显示在 fileText 上
                 fileText.setText("TODO");
+                String PATH="/mnt/sdcard/chenxh/mytestApp";
+                File file = new File(PATH);
+                if(!file.exists()) file.mkdirs();
+
+                File file2 = new File(PATH+"/test.txt");
+                if(!file2.exists()) {
+                    try {
+                        file2.createNewFile();
+                        Toast.makeText(getApplicationContext(),"文件创建成功",Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                FileOutputStream outputStream = null;
+                try {
+                    outputStream = new FileOutputStream(PATH+"/test.txt");
+                    outputStream.write("TODOTEST".getBytes());
+                    Toast.makeText(getApplicationContext(),"文件写入成功",Toast.LENGTH_SHORT).show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                FileInputStream inputStream = null;
+                try {
+                    inputStream =new FileInputStream(PATH+"/test.txt");
+                    InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                    char[] text=new char[1024];
+                    int len= inputStreamReader.read(text);
+                    fileText.setText(new String (text));
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
             }
         });
     }

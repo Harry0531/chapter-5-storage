@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
 
     private List<Note> loadNotesFromDatabase() {
         // TODO 从数据库中查询数据，并转换成 JavaBeans
-        String ord = TodoContract.Todo.COLUMN_DATE+","+ TodoContract.Todo.COLUMN_STATE;
+        String ord = TodoContract.Todo.COLUMN_STATE;
         List<Note> result = new LinkedList<>();
         Cursor cursor = null;
         try {
@@ -129,7 +129,9 @@ public class MainActivity extends AppCompatActivity {
                     TodoContract.Todo.COLUMN_STATE,
                     TodoContract.Todo.COLUMN_DATE,
                     TodoContract.Todo.COLUMN_CONTENT
-            }, null, null, null, null,ord+ " DESC");
+            }, null, null, null, null,
+                    TodoContract.Todo.COLUMN_STATE + " ASC, " +
+                            TodoContract.Todo.COLUMN_DATE + " DESC");
             while (cursor.moveToNext()) {
                 String content = cursor.getString(cursor.getColumnIndex(TodoContract.Todo.COLUMN_CONTENT));
                 long date = cursor.getLong(cursor.getColumnIndex(TodoContract.Todo.COLUMN_DATE));
